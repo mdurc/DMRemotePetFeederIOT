@@ -11,9 +11,9 @@ import subprocess
 import argparse
 import cv2
 
-app = Flask(__name__,template_folder='/home/mattd/fifth/templates', static_url_path='/home/mattd/fifth/static')
+app = Flask(__name__,template_folder='DMfeeder/templates', static_url_path='DMfeeder/static')
 
-UPLOAD_DIRECTORY = '/home/mattd/fifth/audioFiles'
+UPLOAD_DIRECTORY = 'DMfeeder'
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -148,7 +148,7 @@ def video_feed():
 @app.route('/')
 def index():
     # Render the HTML template
-    return render_template('fifth.html')
+    return render_template('web.html')
 
 
 @app.route('/upload', methods=['POST'])
