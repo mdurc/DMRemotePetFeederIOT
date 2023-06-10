@@ -6,4 +6,4 @@ There are a couple of places to edit directories.
 app.py: lines 14, 16, and 151                 web.html: lines 6 and 7
 
 
-Created for KHS engineering class
+Created for an engineering class
