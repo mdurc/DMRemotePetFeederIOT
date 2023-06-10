@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>DM Pet Feeder</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/home/mattd/fifth/static/css/style.css">
+    <link rel="shortcut icon" href="/home/mattd/fifth/static/favicon.ico">
+    
+    <script>
+        $(document).ready(function() {
+            $('#run-motor1').click(function() {
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ url_for("run_motor1") }}',
+                    success: function() {
+                        console.log('Successfully Ran the Food');
+                    }
+                });
+            });
+        });
+        
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#run-motor2').click(function() {
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ url_for("run_motor2") }}',
+                    success: function() {
+                        console.log('Successfully Ran the Water');
+                    }
+                });
+            });
+        });
+        
+    </script>
+  </head>
+  <body>
+    <div class="container">
+        <div class="input-container">
+            <div class="button-container">
+                <button id="run-motor1">Run Water</button>
+                <button id="run-motor2">Run Food</button>
+            </div>
+        </div>
+        
+        
+        <div class="cam">
+            <h2 class="video-header">Video:</h2>
+            <div id="video-container">
+                <img id="video" src="{{ url_for('video_feed') }}" alt="Video Stream" onerror="notFound()" onload="imageLoaded()" />
+                <div class="not-found" id="not-found">Video not found.</div>
+            </div>
+            
+        </div>
+        
+    </div>
+    
+    <div>
+        <audio id="audio" controls></audio>
+        <button id="record-btn">Record</button>
+        <button id="stop-btn">Stop</button>
+        <button id="upload-btn">Upload</button>
+
+        <div id="time"></div>
+    </div>
+    
+    <script>
+        const audio = document.getElementById('audio');
+        const recordBtn = document.getElementById('record-btn');
+        const stopBtn = document.getElementById('stop-btn');
+        const uploadBtn = document.getElementById('upload-btn');
+
+        let chunks = [];
+        let mediaRecorder; // Declare mediaRecorder variable here
+        let fileCount = 1;
+
+        navigator.mediaDevices.getUserMedia({audio: true})
+            .then(stream => {
+                mediaRecorder = new MediaRecorder(stream); // Assign value here
+
+                recordBtn.addEventListener('click', () => {
+                    chunks = [];
+                    mediaRecorder.start();
+                    recordBtn.disabled = true;
+                    stopBtn.disabled = false;
+
+                    
+                });
+                mediaRecorder.addEventListener('dataavailable', event => {
+                        chunks.push(event.data);
+                    });
+
+                stopBtn.addEventListener('click', () => {
+                    mediaRecorder.stop();
+                    recordBtn.disabled = false;
+                    stopBtn.disabled = true;
+                });
+
+                mediaRecorder.addEventListener('stop', () => {
+                    const blob = new Blob(chunks, {type: 'audio/wav'});
+                    
+                    
+
+                    audio.src = URL.createObjectURL(blob);
+                    audio.controls = true;
+                });
+            })
+            .catch(error => console.error(error));
+
+        uploadBtn.addEventListener('click', () => {
+            const blob = new Blob(chunks, {type: 'audio/wav'});
+            const formData = new FormData();
+            formData.append('audio', blob);
+            
+            const now = new Date().toISOString().substring(0,10);
+            
+            
+            const filename = now + 'Count'+fileCount+'.wav'; // Generate unique filename
+            fileCount=fileCount+1;
+            fetch('/upload?filename=' + encodeURIComponent(filename), {method: 'POST', body: formData})
+                .then(response => console.log(response.text()))
+                .catch(error => console.error(error));
+        });
+        
+      
+      function notFound() {
+            var videoContainer = document.getElementById('video-container');
+            videoContainer.removeChild(document.getElementById('video'));
+            var notFoundDiv = document.getElementById('not-found');
+            notFoundDiv.style.display = 'block';
+        }
+      function imageLoaded() {
+        var notFoundDiv = document.getElementById('not-found');
+        notFoundDiv.style.display = 'none';
+      }
+    
+    </script>
+  </body>
+  
+  
+  
+  
+</html>
