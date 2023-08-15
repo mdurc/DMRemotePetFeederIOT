@@ -1,9 +1,6 @@
 # DMRemotePetFeederIOT
-IOT remote petfeeder with raspberry pi 3. Website with ngrok, html, css, js, python
-
-There are a couple of places to edit directories.
-
-app.py: lines 14, 16, and 151                 web.html: lines 6 and 7
-
+IOT remote petfeeder with raspberry pi 3. Website with ngrok, html, css, js, python.
 
 Created for an engineering class
+
+### <a href= "https://docs.google.com/document/d/1_cqLYCMsEstkvBpQMkPGJvJtR66Fl4MY8sV3mrXIgwc/edit?usp=sharing"> Engineering Report with Build Notes and Coding Notes </a>
